@@ -57,6 +57,12 @@ public class ExtImageSaveHandler {
                         generatePresignedUrlRequest.setExpiration(new Date(System.currentTimeMillis() + ossProperties.getExpirationSeconds() * 1000));
                         URL generatedUrl = ossClient.generatePresignedUrl(generatePresignedUrlRequest);
                         url = generatedUrl.toString();
+                        if (ossProperties.getIsCname()) {
+                            String query = generatedUrl.getQuery();
+                            return ossProperties.getCdnEndpoint() + generatedUrl.getPath() + (query != null ? "?" + query : "");
+                        } else {
+                            return generatedUrl.toString();
+                        }
                     } else {
                         String protocol = "https://";
                         String endpoint = ossProperties.getIsCname() ? ossProperties.getCdnEndpoint() : ossProperties.getEndpoint();
